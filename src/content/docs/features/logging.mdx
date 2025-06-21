@@ -1,0 +1,87 @@
+---
+title: Journalisation
+description: Système de logs élégant
+---
+
+# 🎨 Journalisation élégante
+
+Veko.js intègre un système de logs moderne, coloré et structuré, conçu pour rendre le développement et la maintenance plus agréables et efficaces.
+
+## ✨ Fonctionnalités principales
+
+- **Horodatage formaté** pour chaque log
+- **Badges colorés** et icônes Unicode selon le type de log
+- **Types de logs spécialisés** (succès, erreur, info, serveur, route, etc.)
+- **Affichage optimisé en console** (couleurs ANSI, alignement)
+- **Logs détaillés pour le hot reload, les plugins, les routes, etc.)
+- **Support natif pour la journalisation dans les plugins**
+
+## 🛠️ Utilisation dans le code
+
+Utilise la méthode `app.log(type, message, details)` ou le contexte plugin `context.log(type, message, details)` :
+
+```javascript
+app.log('success', 'Serveur démarré', '🌐 http://localhost:3000');
+app.log('error', 'Erreur critique', '❌ Impossible de se connecter à la base');
+app.log('warning', 'Attention', '⚠️ Utilisation mémoire élevée');
+app.log('info', 'Information', 'ℹ️ Mode développement actif');
+app.log('server', 'Serveur', '🚀 Démarrage du serveur');
+app.log('route', 'Route', '🌐 Nouvelle route chargée');
+app.log('dev', 'Développement', '🛠️ Hot reload activé');
+app.log('file', 'Fichier', '📁 Modification détectée');
+app.log('reload', 'Reload', '🔄 Rechargement intelligent');
+app.log('create', 'Création', '➕ Élément créé');
+app.log('delete', 'Suppression', '🗑️ Élément supprimé');
+app.log('install', 'Installation', '📦 Module installé');
+```
+
+## 🖥️ Exemple de sortie console
+
+```
+[2:32:15 PM] ✨  Serveur démarré avec succès 🌐 http://localhost:3000
+[2:32:16 PM] 🛠️  Mode développement actif 🔥 Hot reload sur le port 3008
+[2:32:16 PM] 🔌  Plugin database chargé database v1.0.0
+[2:32:17 PM] 🌐  Route chargée index.js → /
+[2:32:18 PM] ➕  Route créée dynamiquement GET /api/users
+[2:32:19 PM] 📁  Fichier modifié 📝 routes/users.js
+[2:32:19 PM] 🔄  Route rechargée 🔄 routes/users.js
+```
+
+## 🔌 Journalisation dans les plugins
+
+Dans un plugin, utilise le contexte pour logger :
+
+```javascript
+module.exports = {
+  name: 'mon-plugin',
+  async load(app, config, context) {
+    context.log('success', 'Plugin chargé !');
+    context.log('info', 'Initialisation terminée');
+  }
+};
+```
+
+## ⚡ Journalisation et hot reload
+
+Le système de logs affiche en temps réel les événements liés au hot reload :
+
+- Modification de route → log spécifique
+- Modification de vue → log spécifique
+- Modification de plugin → log spécifique
+
+## ⚙️ Configuration avancée
+
+Tu peux personnaliser le niveau de logs, le fichier de logs d’erreur, et l’affichage des stacks dans la configuration de l’application :
+
+```javascript
+const app = new App({
+  errorLog: 'error.log',   // Fichier de logs d’erreur
+  showStack: true,         // Afficher la stack trace en cas d’erreur
+  // ...
+});
+```
+
+## 📚 Pour aller plus loin
+
+- [Configuration avancée](/guides/configuration)
+- [Système de plugins](/features/plugins)

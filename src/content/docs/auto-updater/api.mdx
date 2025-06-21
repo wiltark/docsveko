@@ -1,0 +1,146 @@
+---
+title: API Auto-Updater
+description: API REST pour l'auto-updater
+---
+
+# 🔌 API REST Auto-Updater
+
+L’auto-updater de Veko.js expose une API REST pour piloter à distance la vérification, l’installation, la configuration et la restauration des mises à jour.
+
+## ✨ Endpoints disponibles
+
+| Méthode | Endpoint                                 | Description                                 |
+|---------|------------------------------------------|---------------------------------------------|
+| GET     | `/\_veko/updates/check`                  | Vérifier s’il existe une mise à jour        |
+| POST    | `/\_veko/updates/perform`                | Installer la dernière mise à jour           |
+| POST    | `/\_veko/updates/rollback`               | Restaurer la version précédente             |
+| GET     | `/\_veko/updates/stats`                  | Obtenir les statistiques de l’auto-updater  |
+| GET     | `/\_veko/updates/config`                 | Afficher la configuration actuelle          |
+| POST    | `/\_veko/updates/config`                 | Modifier la configuration                   |
+
+## 📖 Détail des endpoints
+
+### Vérifier les mises à jour
+
+```http
+GET /_veko/updates/check
+```
+**Réponse :**
+```json
+{
+  "hasUpdate": true,
+  "currentVersion": "1.2.0",
+  "latestVersion": "1.3.0",
+  "channel": "stable"
+}
+```
+
+### Installer la dernière mise à jour
+
+```http
+POST /_veko/updates/perform
+```
+**Réponse :**
+```json
+{
+  "success": true,
+  "message": "Mise à jour installée avec succès",
+  "previousVersion": "1.2.0",
+  "newVersion": "1.3.0"
+}
+```
+
+### Restaurer la version précédente (rollback)
+
+```http
+POST /_veko/updates/rollback
+```
+**Réponse :**
+```json
+{
+  "success": true,
+  "message": "Rollback effectué",
+  "restoredVersion": "1.2.0"
+}
+```
+
+### Obtenir les statistiques
+
+```http
+GET /_veko/updates/stats
+```
+**Réponse :**
+```json
+{
+  "totalUpdates": 5,
+  "successRate": 100,
+  "rollbacks": 0,
+  "lastUpdate": "2024-06-20T14:32:00Z",
+  "channel": "stable"
+}
+```
+
+### Afficher la configuration
+
+```http
+GET /_veko/updates/config
+```
+**Réponse :**
+```json
+{
+  "enabled": true,
+  "checkOnStart": true,
+  "autoUpdate": false,
+  "updateChannel": "stable",
+  "securityUpdates": true,
+  "backupCount": 5,
+  "checkInterval": 3600000,
+  "rollbackOnFailure": true
+}
+```
+
+### Modifier la configuration
+
+```http
+POST /_veko/updates/config
+Content-Type: application/json
+
+{
+  "autoUpdate": true,
+  "updateChannel": "beta"
+}
+```
+**Réponse :**
+```json
+{
+  "success": true,
+  "config": {
+    "autoUpdate": true,
+    "updateChannel": "beta"
+  }
+}
+```
+
+## 🛠️ Utilisation en JavaScript
+
+```javascript
+// Vérifier les mises à jour
+const res = await fetch('http://localhost:3000/_veko/updates/check');
+const info = await res.json();
+if (info.hasUpdate) {
+  await fetch('http://localhost:3000/_veko/updates/perform', { method: 'POST' });
+}
+```
+
+## 🔒 Sécurité
+
+- Les endpoints sont accessibles uniquement en local par défaut.
+- Pour exposer l’API à distance, configure les options de sécurité dans l’application.
+- Les opérations critiques (update, rollback, config) peuvent nécessiter une authentification selon la configuration.
+
+---
+
+## 📚 Pour aller plus loin
+
+- [Guide complet](/auto-updater/guide)
+- [Configuration de l’auto-updater](/auto-updater/configuration)

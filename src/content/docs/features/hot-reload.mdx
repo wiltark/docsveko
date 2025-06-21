@@ -1,0 +1,128 @@
+---
+title: Rechargement intelligent
+description: Hot-reload sélectif
+---
+
+# 🔥 Rechargement intelligent
+
+Le rechargement intelligent de Veko.js permet de développer sans jamais redémarrer manuellement le serveur.  
+Chaque modification de fichier est détectée : seules les parties concernées de l’application sont rechargées, pour un développement ultra-rapide et sans coupure.
+
+## ✨ Fonctionnalités
+
+- **Reload sélectif** :  
+  - Modification d’une route → seule la route est rechargée
+  - Modification d’une vue → rechargement léger du template
+  - Modification d’un plugin → rechargement du plugin concerné
+  - Modification d’un layout → cache vidé et layout rechargé
+  - Modification d’un fichier statique → rechargement du navigateur
+- **WebSocket intégré** pour la communication temps réel entre serveur et navigateur
+- **Logs colorés** pour chaque événement de reload
+- **Aucune coupure du serveur** : les connexions actives ne sont jamais interrompues
+
+## ⚙️ Configuration
+
+Active le hot reload en mode développement :
+
+```javascript
+const app = new App({
+  isDev: true,
+  wsPort: 3008, // Port WebSocket pour le hot reload
+  watchDirs: ['views', 'routes', 'public', 'plugins'], // Dossiers surveillés
+  layouts: {
+    enabled: true,
+    defaultLayout: 'main'
+  },
+  plugins: {
+    enabled: true,
+    autoLoad: true,
+    pluginsDir: 'plugins'
+  }
+});
+```
+
+## 🛠️ Fonctionnement
+
+- **Surveillance des fichiers** avec [chokidar](https://www.npmjs.com/package/chokidar)
+- **WebSocket** pour notifier le navigateur en temps réel
+- **Script client injecté automatiquement** dans vos pages en mode dev
+
+### Exemple de script client injecté
+
+```javascript
+<script>
+(function() {
+  const ws = new WebSocket('ws://localhost:3008');
+  ws.onopen = () => console.log('🔗 Veko.js connecté');
+  ws.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    switch(data.type) {
+      case 'reload':
+        console.log('🔄 Rechargement complet...');
+        setTimeout(() => window.location.reload(), 300);
+        break;
+      case 'route-reload':
+        console.log('🔄 Route rechargée:', data.route);
+        if (window.location.pathname === data.route) {
+          setTimeout(() => window.location.reload(), 300);
+        }
+        break;
+      case 'view-reload':
+        console.log('🎨 Vue rechargée:', data.file);
+        setTimeout(() => window.location.reload(), 300);
+        break;
+      case 'plugin-reload':
+        console.log('🔌 Plugin rechargé:', data.plugin);
+        break;
+      case 'layout-reload':
+        console.log('🎨 Layout rechargé:', data.file);
+        setTimeout(() => window.location.reload(), 300);
+        break;
+    }
+  };
+})();
+</script>
+```
+
+## 🚦 Types de reload
+
+| Type de fichier      | Action de reload                  |
+|----------------------|-----------------------------------|
+| Route (`routes/`)    | Reload sélectif de la route       |
+| Vue (`views/`)       | Reload du template EJS            |
+| Plugin (`plugins/`)  | Reload du plugin concerné         |
+| Layout (`layouts/`)  | Reload du layout et vidage cache  |
+| Fichier statique     | Reload navigateur (auto)          |
+
+## 🖥️ Exemple de logs
+
+```
+[14:21:10] 🔄 Route rechargée routes/users.js
+[14:21:11] 🎨 Vue rechargée views/index.ejs
+[14:21:12] 🔌 Plugin rechargé plugins/auth.js
+[14:21:13] 🎨 Layout rechargé views/layouts/main.ejs
+[14:21:14] 📁 Fichier statique modifié public/css/style.css
+```
+
+## 🧩 Plugins et hot reload
+
+Les plugins bénéficient aussi du hot reload : toute modification d’un plugin le recharge instantanément, sans redémarrer l’application.
+
+## ⚡ Astuces
+
+- Utilise la commande :  
+  ```bash
+  veko dev
+  ```
+  pour activer le mode développement avec hot reload.
+- Ajoute ou retire des dossiers à surveiller via l’option `watchDirs`.
+- Les logs de reload sont visibles en console avec des couleurs et des icônes.
+
+---
+
+## 📚 Pour aller plus loin
+
+- [Journalisation élégante](/features/logging)
+- [Système de plugins](/features/plugins)
+- [Gestion des layouts](/features/layouts)
+- [Structure du projet](/guides/project-structure)

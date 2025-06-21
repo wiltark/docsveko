@@ -1,0 +1,141 @@
+---
+title: Structure du projet
+description: Organisation des fichiers dans Veko.js
+---
+
+# 🗂️ Structure du projet
+
+Veko.js organise automatiquement ton application pour un développement rapide, modulaire et maintenable. Voici la structure recommandée :
+
+```plaintext
+mon-projet/
+├── routes/
+│   ├── index.js          # Route: /
+│   ├── about.js          # Route: /about
+│   ├── users/
+│   │   ├── index.js      # Route: /users
+│   │   └── [id].js       # Route: /users/:id
+│   └── api/
+│       └── products.js   # Route: /api/products
+├── views/
+│   ├── layouts/          # Layouts EJS
+│   │   ├── main.ejs      # Layout principal
+│   │   └── admin.ejs     # Layout admin
+│   ├── partials/         # Composants réutilisables
+│   ├── index.ejs
+│   └── about.ejs
+├── public/
+│   ├── css/
+│   ├── js/
+│   └── images/
+├── plugins/              # Plugins personnalisés
+│   ├── database.js
+│   ├── auth.js
+│   └── cache.js
+├── data/                 # Données des plugins
+│   └── plugins/
+│       ├── database.json
+│       └── auth.json
+├── config/               # Fichiers de configuration
+│   └── app.js
+├── middleware/           # Middlewares personnalisés
+└── package.json
+```
+
+## 📁 Détail des dossiers
+
+- **routes/** : Toutes tes routes HTTP (GET, POST, etc.) sont chargées automatiquement.  
+  Utilise des fichiers ou des sous-dossiers pour organiser tes endpoints.  
+  - `routes/index.js` → `/`
+  - `routes/users/[id].js` → `/users/:id`
+
+- **views/** : Tes templates EJS.  
+  - `layouts/` pour les layouts globaux (ex : `main.ejs`)
+  - `partials/` pour les composants réutilisables
+
+- **public/** : Fichiers statiques servis tels quels (CSS, JS, images…)
+
+- **plugins/** : Plugins Node.js pour étendre Veko.js (auth, cache, etc.)
+
+- **data/** : Données persistantes des plugins (JSON, fichiers temporaires…)
+
+- **config/** : Fichiers de configuration de l’application
+
+- **middleware/** : Middlewares personnalisés à brancher sur Express
+
+- **package.json** : Dépendances et scripts du projet
+
+## 🛣️ Système de routes
+
+- **Chargement automatique** : Tous les fichiers de `routes/` sont chargés comme endpoints.
+- **Paramètres dynamiques** : Utilise `[param].js` pour `/route/:param`
+- **Méthodes HTTP** : Exporte un objet avec `get`, `post`, etc.
+
+```javascript
+// routes/users.js
+module.exports = {
+  get: (req, res) => {
+    res.render('users', { users: [] });
+  },
+  post: (req, res) => {
+    // Création d'utilisateur
+    res.status(201).json({ message: 'Utilisateur créé' });
+  }
+};
+```
+
+## 🎨 Système de layouts
+
+Les layouts EJS permettent de factoriser l’en-tête, le pied de page, etc.
+
+**Exemple : views/layouts/main.ejs**
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= meta.title || 'Veko.js App' %></title>
+  <% if (meta.description) { %>
+  <meta name="description" content="<%= meta.description %>">
+  <% } %>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- sections.header %>
+  <main>
+    <%- sections.content %>
+  </main>
+  <%- sections.footer %>
+</body>
+</html>
+```
+
+## 🔌 Plugins
+
+Place tes plugins dans `plugins/`.  
+Chaque plugin peut ajouter des routes, hooks, middlewares, commandes CLI, etc.
+
+```javascript
+// plugins/hello.js
+module.exports = {
+  name: 'hello',
+  async load(app, config, context) {
+    context.addRoute('get', '/hello', (req, res) => {
+      res.json({ message: 'Hello from plugin!' });
+    });
+  }
+};
+```
+
+## ⚡ Développement ultra-moderne
+
+- **Hot reload intelligent** : Modifie une route, une vue ou un plugin, c’est rechargé instantanément.
+- **WebSocket intégré** : Pour le rechargement et la communication temps réel.
+- **Logs colorés** : Pour suivre l’activité du serveur.
+
+---
+
+## 📚 Pour aller plus loin
+
+- [Configuration avancée](/guides/configuration)
+- [Système de plugins](/features/plugins)
+- [Gestion des layouts](/features/layouts)

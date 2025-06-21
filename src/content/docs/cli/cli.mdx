@@ -1,0 +1,126 @@
+---
+title: CLI
+description: Commandes en ligne de commande Veko.js
+---
+
+# 🛠️ CLI Veko.js
+
+La CLI de Veko.js offre une expérience interactive, colorée et complète pour gérer tous les aspects de ton projet : création, développement, build, auto-updater, plugins, et plus encore.
+
+## ✨ Commandes principales
+
+### Création de projet
+
+```bash
+# Créer un nouveau projet (template par défaut)
+veko setup mon-app
+
+# Créer avec un template spécifique
+veko setup --template api --name mon-api
+veko setup --template blog --name mon-blog
+veko setup --template admin --name admin-panel
+
+# Options supplémentaires
+veko setup mon-app --git --skip-install
+veko setup --name mon-app --dir ./projets/mon-app
+```
+
+### Développement
+
+```bash
+# Démarrer le serveur de développement (hot reload)
+veko dev
+
+# Démarrer avec un port personnalisé
+veko dev --port 8080
+
+# Démarrer avec des dossiers surveillés personnalisés
+veko dev --watch "src,views,routes"
+
+# Démarrer avec un fichier d'entrée spécifique
+veko dev --file ./src/server.js
+```
+
+### Build & Production
+
+```bash
+# Builder pour la production
+veko build
+
+# Démarrer le serveur en production
+veko start
+```
+
+### Auto-Updater
+
+```bash
+veko update              # Menu interactif de mise à jour
+veko update check        # Vérifier les mises à jour
+veko update update       # Installer la dernière mise à jour
+veko update config       # Configurer l’auto-updater
+veko update rollback     # Restaurer la version précédente
+veko update stats        # Statistiques de mise à jour
+veko update fix          # Réparer l’auto-updater
+veko update help         # Aide sur l’auto-updater
+```
+
+### Plugins
+
+```bash
+# Lister les plugins
+veko plugins list
+
+# Activer/désactiver un plugin
+veko plugins toggle nom-du-plugin
+
+# Installer un plugin
+veko plugins install nom-du-plugin
+
+# Supprimer un plugin
+veko plugins remove nom-du-plugin
+```
+
+### Divers
+
+```bash
+# Afficher l’aide globale
+veko --help
+
+# Afficher la version de Veko.js
+veko --version
+```
+
+## 🎨 Expérience interactive
+
+- Interface colorée avec emojis et animations
+- Auto-complétion des commandes
+- Menus interactifs pour la configuration
+- Progress bars et indicateurs de statut en temps réel
+
+## 📦 Exemples rapides
+
+```bash
+# Créer un projet blog prêt à l’emploi
+veko setup --template blog --name mon-blog
+
+# Démarrer en mode développement
+veko dev
+
+# Vérifier et installer une mise à jour
+veko update check
+veko update update
+```
+
+## 🧩 Commandes avancées
+
+- Gestion dynamique des routes et plugins
+- Génération de rapports de performance
+- Accès aux statistiques détaillées de l’auto-updater
+
+---
+
+## 📚 Pour aller plus loin
+
+- [Guide complet de l’auto-updater](/auto-updater/guide)
+- [Système de plugins](/features/plugins)
+- [Structure du projet](/guides/project-structure)

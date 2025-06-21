@@ -1,0 +1,150 @@
+---
+title: Guide Auto-Updater
+description: Guide complet de l'auto-updater
+---
+
+# 🔄 Guide Auto-Updater
+
+L’auto-updater de Veko.js est le système de mise à jour le plus avancé de l’écosystème Node.js. Il permet de maintenir ton application à jour, en toute sécurité, avec gestion des canaux, backups intelligents et restauration instantanée.
+
+## ✨ Fonctionnalités principales
+
+- **Vérification automatique des mises à jour** (programmable)
+- **Multi-canaux** : stable, beta, alpha
+- **Mises à jour de sécurité prioritaires**
+- **Backups intelligents** avant chaque update
+- **Rollback instantané** en cas d’échec
+- **Vérification d’intégrité SHA512**
+- **Audit de sécurité avant installation**
+- **Interface CLI interactive et colorée**
+- **API REST pour gestion à distance**
+- **Statistiques détaillées et historique**
+
+## 🚀 Démarrage rapide
+
+### Installation globale recommandée
+
+```bash
+npm install -g veko
+```
+
+### Commandes principales
+
+```bash
+veko update              # Lancer le gestionnaire de mises à jour interactif
+veko update check        # Vérifier les mises à jour
+veko update update       # Installer la dernière mise à jour
+veko update config       # Configurer l'auto-updater
+veko update rollback     # Restaurer la version précédente
+veko update stats        # Afficher les statistiques
+veko update fix          # Réparer l’auto-updater
+veko update help         # Afficher l’aide
+```
+
+### Utilisation sans installation globale
+
+```bash
+npx veko update
+```
+
+## ⚙️ Configuration de l’auto-updater
+
+Active et configure l’auto-updater dans ton application :
+
+```javascript
+const { App } = require('veko');
+
+const app = new App({
+  autoUpdater: {
+    enabled: true,              // Activer l'auto-updater
+    checkOnStart: true,         // Vérifier au démarrage
+    autoUpdate: false,          // Mode manuel (recommandé)
+    updateChannel: 'stable',    // stable | beta | alpha
+    securityUpdates: true,      // Mises à jour de sécurité auto
+    backupCount: 5,             // Nombre de backups à conserver
+    checkInterval: 3600000,     // Vérification périodique (ms)
+    rollbackOnFailure: true     // Restauration auto en cas d’échec
+  }
+});
+
+app.listen();
+```
+
+## 🛡️ Sécurité et fiabilité
+
+- **Vérification d’intégrité SHA512** de chaque package téléchargé
+- **Audit de vulnérabilités** avant installation
+- **Backups automatiques** avant chaque update
+- **Rollback instantané** en cas d’échec
+- **Aucune interruption** de service pendant la mise à jour
+
+## 🎯 Gestion des canaux
+
+- **Stable** : Recommandé pour la production, testé et fiable
+- **Beta** : Nouvelles fonctionnalités en test, peut contenir des bugs mineurs
+- **Alpha** : Dernières nouveautés, expérimental, pour tests uniquement
+
+Change le canal via la CLI :
+
+```bash
+veko update config updateChannel beta
+```
+
+## 📊 Statistiques et historique
+
+Affiche l’historique des mises à jour, taux de succès, rollbacks, etc. :
+
+```bash
+veko update stats
+```
+
+## 🌐 API REST intégrée
+
+Gère l’auto-updater à distance via HTTP :
+
+```bash
+# Vérifier les mises à jour
+GET http://localhost:3000/_veko/updates/check
+
+# Lancer une mise à jour
+POST http://localhost:3000/_veko/updates/perform
+
+# Restaurer une version précédente
+POST http://localhost:3000/_veko/updates/rollback
+
+# Afficher les statistiques
+GET http://localhost:3000/_veko/updates/stats
+```
+
+## 🔧 Exemples d’utilisation avancée
+
+### Vérifier et mettre à jour en JavaScript
+
+```javascript
+const updateInfo = await app.checkForUpdates();
+if (updateInfo.hasUpdate) {
+  await app.performUpdate(updateInfo);
+}
+```
+
+### Rollback programmatique
+
+```javascript
+await app.rollbackUpdate();
+```
+
+### Récupérer le statut de l’auto-updater
+
+```javascript
+const status = app.getAutoUpdaterInfo();
+console.log(status);
+```
+
+---
+
+## 📚 Pour aller plus loin
+
+- [Configuration avancée](/guides/configuration)
+- [Structure du projet](/guides/project-structure)
+- [CLI](/cli)
+- [Statistiques de l’auto-updater](/auto-updater/stats)

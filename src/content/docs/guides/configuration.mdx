@@ -1,0 +1,157 @@
+---
+title: Configuration
+description: Options de configuration avancées
+---
+
+# ⚙️ Configuration avancée
+
+Veko.js propose une configuration flexible pour s’adapter à tous les besoins.  
+Tu peux personnaliser chaque aspect du framework via l’objet passé au constructeur `App` ou via le fichier `config/app.js`.
+
+## Exemple de configuration complète
+
+```javascript
+const { App } = require('veko');
+
+const app = new App({
+  port: 3000,                    // Port d'écoute HTTP
+  wsPort: 3008,                  // Port WebSocket (dev)
+  viewsDir: 'views',             // Dossier des vues EJS
+  staticDir: 'public',           // Dossier des fichiers statiques
+  routesDir: 'routes',           // Dossier des routes
+  isDev: false,                  // Mode développement
+  watchDirs: ['views', 'routes', 'public'], // Dossiers à surveiller (dev)
+  errorLog: 'error.log',         // Fichier de logs d'erreur
+  showStack: true,               // Afficher la stack trace
+  autoInstall: true,             // Installation auto des modules manquants
+  layouts: {                     // Configuration des layouts EJS
+    enabled: true,
+    defaultLayout: 'main',
+    layoutsDir: 'views/layouts',
+    extension: '.ejs',
+    cache: true
+  },
+  plugins: {                     // Système de plugins
+    enabled: true,
+    autoLoad: true,
+    pluginsDir: 'plugins'
+  },
+  prefetch: {                    // Préchargement intelligent
+    enabled: true,
+    maxConcurrent: 3,
+    notifyUser: true,
+    cacheRoutes: true,
+    prefetchDelay: 1000
+  },
+  autoUpdater: {                 // Auto-updater révolutionnaire
+    enabled: true,
+    checkOnStart: true,
+    autoUpdate: false,
+    updateChannel: 'stable',     // stable | beta | alpha
+    securityUpdates: true,
+    backupCount: 5,
+    checkInterval: 3600000,
+    rollbackOnFailure: true
+  }
+});
+
+app.loadRoutes().listen();
+```
+
+## Principales options
+
+- **port** : Port HTTP du serveur (par défaut : 3000)
+- **wsPort** : Port WebSocket pour le hot reload (dev)
+- **viewsDir** : Dossier des vues EJS
+- **staticDir** : Dossier des fichiers statiques
+- **routesDir** : Dossier des routes
+- **isDev** : Active le mode développement (hot reload, logs détaillés…)
+- **watchDirs** : Dossiers surveillés pour le rechargement intelligent
+- **errorLog** : Fichier de logs d’erreur
+- **showStack** : Affiche la stack trace en cas d’erreur
+- **autoInstall** : Installe automatiquement les dépendances manquantes
+
+### Layouts
+
+```javascript
+layouts: {
+  enabled: true,              // Active le système de layouts
+  layoutsDir: 'views/layouts',// Dossier des layouts
+  defaultLayout: 'main',      // Nom du layout par défaut
+  extension: '.ejs',          // Extension des fichiers
+  sections: ['head', 'header', 'content', 'footer', 'scripts'],
+  cache: true                 // Active le cache en production
+}
+```
+
+### Plugins
+
+```javascript
+plugins: {
+  enabled: true,          // Active le système de plugins
+  autoLoad: true,         // Chargement automatique des plugins
+  pluginsDir: 'plugins'   // Dossier des plugins
+}
+```
+
+### Auto-Updater
+
+```javascript
+autoUpdater: {
+  enabled: true,              // Active l’auto-updater
+  checkOnStart: true,         // Vérifie au démarrage
+  autoUpdate: false,          // Mode manuel (recommandé)
+  updateChannel: 'stable',    // stable | beta | alpha
+  securityUpdates: true,      // Mises à jour de sécurité auto
+  backupCount: 5,             // Nombre de backups à conserver
+  checkInterval: 3600000,     // Vérification périodique (ms)
+  rollbackOnFailure: true     // Restauration auto en cas d’échec
+}
+```
+
+## Configuration via fichier
+
+Tu peux aussi créer un fichier `config/app.js` pour centraliser la configuration :
+
+```javascript
+// config/app.js
+module.exports = {
+  port: 3000,
+  isDev: process.env.NODE_ENV !== 'production',
+  // ...autres options
+};
+```
+
+Puis dans ton `app.js` :
+
+```javascript
+const config = require('./config/app');
+const { App } = require('veko');
+const app = new App(config);
+app.loadRoutes().listen();
+```
+
+## 🔄 Modifier la configuration à chaud
+
+Certaines options (plugins, auto-updater, logs…) peuvent être modifiées à chaud via la CLI ou l’API REST :
+
+```bash
+veko update config autoUpdate true
+veko update config updateChannel beta
+```
+
+## 🛠️ Bonnes pratiques
+
+- Utilise le mode développement (`isDev: true`) pour profiter du hot reload et des logs détaillés.
+- Active le cache des layouts uniquement en production.
+- Place tes plugins dans le dossier `plugins/` pour un chargement automatique.
+- Utilise le fichier `config/app.js` pour séparer la config du code.
+
+---
+
+## 📚 Pour aller plus loin
+
+- [Structure du projet](/guides/project-structure)
+- [Système de plugins](/features/plugins)
+- [Gestion des layouts](/features/layouts)
+- [Auto-Updater](/auto-updater/guide)

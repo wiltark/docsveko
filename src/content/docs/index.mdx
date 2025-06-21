@@ -1,0 +1,61 @@
+---
+title: Bienvenue sur Veko.js
+description: Framework web ultra-moderne pour Node.js avec Express et EJS
+template: splash
+hero:
+  tagline: Construisez des applications web modernes avec vitesse et élégance
+  image:
+    file: ../../assets/logo.png
+  actions:
+    - text: Commencer
+      link: /guides/getting-started
+      icon: right-arrow
+    - text: GitHub
+      link: https://github.com/wiltark/veko.js
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## Pourquoi Veko.js ?
+
+Veko.js est un framework **ultra-moderne** et **intelligent** pour Node.js avec Express et EJS, conçu pour un développement rapide et efficace.
+
+## Fonctionnalités clés
+
+<CardGrid stagger>
+  <Card title="Rechargement intelligent" icon="lightning">
+    Rechargement sélectif des routes modifiées sans redémarrage du serveur
+  </Card>
+  <Card title="Auto-Updater révolutionnaire" icon="sync">
+    Mises à jour automatiques avec gestion des erreurs et restauration
+  </Card>
+  <Card title="Système de plugins" icon="plug">
+    Architecture extensible avec hooks et API complète
+  </Card>
+  <Card title="Journalisation élégante" icon="pencil">
+    Logs colorés avec icônes et horodatages pour une meilleure expérience
+  </Card>
+  <Card title="Système de layout avancé" icon="layout">
+    Templating puissant avec sections et helpers
+  </Card>
+  <Card title="Installation automatique" icon="package">
+    Gestion automatique des dépendances pendant le développement
+  </Card>
+</CardGrid>
+
+## Commandes rapides
+
+```bash
+# Démarrer le serveur de développement
+veko dev
+
+# Vérifier les mises à jour
+veko update check
+
+# Installer une mise à jour
+veko update update
+
+# Configurer l'auto-updater
+veko update config
