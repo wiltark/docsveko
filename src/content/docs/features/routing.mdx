@@ -1,0 +1,159 @@
+---
+title: Gestion des routes
+description: Définition et gestion des routes
+---
+
+# 🛣️ Gestion des routes
+
+Veko.js gère automatiquement toutes les routes de ton application à partir du dossier `routes/`.  
+Chaque fichier ou sous-dossier correspond à une URL, et tu peux utiliser des paramètres dynamiques, des middlewares, et toutes les méthodes HTTP.
+
+## 📁 Structure des routes
+
+```plaintext
+routes/
+├── index.js          # Route: /
+├── about.js          # Route: /about
+├── users/
+│   ├── index.js      # Route: /users
+│   └── [id].js       # Route: /users/:id
+└── api/
+    └── products.js   # Route: /api/products
+```
+
+- `routes/index.js` → `/`
+- `routes/about.js` → `/about`
+- `routes/users/[id].js` → `/users/:id`
+- `routes/api/products.js` → `/api/products`
+
+## 📝 Définir une route
+
+Chaque fichier exporte un objet avec les méthodes HTTP souhaitées :
+
+```javascript
+// routes/users.js
+module.exports = {
+  // GET /users
+  get: (req, res) => {
+    res.render('users', { users: [] });
+  },
+
+  // POST /users
+  post: (req, res) => {
+    const newUser = req.body;
+    res.status(201).json({ user: newUser });
+  },
+
+  // PUT /users
+  put: (req, res) => {
+    res.json({ message: 'Utilisateur modifié' });
+  },
+
+  // DELETE /users
+  delete: (req, res) => {
+    res.json({ message: 'Utilisateur supprimé' });
+  }
+};
+```
+
+## 🧩 Paramètres dynamiques
+
+Utilise des crochets pour définir des paramètres dans le nom du fichier :
+
+- `routes/users/[id].js` → `/users/:id`
+- `routes/posts/[slug]/comments.js` → `/posts/:slug/comments`
+
+Dans le handler, accède au paramètre via `req.params` :
+
+```javascript
+// routes/users/[id].js
+module.exports = {
+  get: (req, res) => {
+    const userId = req.params.id;
+    res.render('user', { userId });
+  }
+};
+```
+
+## 🛠️ Routes personnalisées
+
+Tu peux aussi exporter une fonction pour définir des routes complexes ou ajouter des middlewares :
+
+```javascript
+// routes/custom.js
+module.exports = (app) => {
+  app.get('/custom', (req, res) => {
+    res.json({ message: 'Route personnalisée' });
+  });
+
+  app.post('/custom/:action', middleware, (req, res) => {
+    res.json({ action: req.params.action });
+  });
+};
+```
+
+## ⚡ Hot reload intelligent
+
+En mode développement, toute modification d’un fichier de route recharge uniquement la route concernée, sans redémarrer le serveur.
+
+## 🔄 Gestion dynamique des routes
+
+Veko.js permet de créer, modifier ou supprimer des routes à chaud :
+
+```javascript
+// Créer une route dynamiquement
+app.createRoute('get', '/api/dynamic', (req, res) => {
+  res.json({ message: 'Route créée dynamiquement !' });
+});
+
+// Mettre à jour une route
+app.updateRoute('get', '/api/dynamic', (req, res) => {
+  res.json({ message: 'Route mise à jour !' });
+});
+
+// Supprimer une route
+app.deleteRoute('get', '/api/dynamic');
+```
+
+## 🧪 Exemple complet
+
+```javascript
+// routes/api/users.js
+const users = [];
+
+module.exports = {
+  get: async (req, res) => {
+    res.json({ users });
+  },
+  post: async (req, res) => {
+    const { name, email } = req.body;
+    if (!name || !email) {
+      return res.status(400).json({ error: 'Nom et email requis' });
+    }
+    const newUser = { id: users.length + 1, name, email };
+    users.push(newUser);
+    res.status(201).json({ user: newUser });
+  }
+};
+```
+
+## 🎨 Utiliser EJS dans les routes
+
+```javascript
+// routes/index.js
+module.exports = {
+  get: (req, res) => {
+    res.render('index', {
+      title: 'Bienvenue sur Veko.js',
+      message: 'Framework ultra-moderne pour Node.js'
+    });
+  }
+};
+```
+
+---
+
+## 📚 Pour aller plus loin
+
+- [Structure du projet](/guides/project-structure)
+- [Système de plugins](/features/plugins)

@@ -1,0 +1,202 @@
+---
+title: Système de plugins
+description: Création et utilisation de plugins
+---
+
+# 🔌 Système de plugins
+
+Le système de plugins de Veko.js permet d’étendre facilement les fonctionnalités de ton application sans modifier le cœur du framework. Les plugins peuvent ajouter des routes, des middlewares, des hooks, des commandes CLI, gérer des données, et bien plus.
+
+## ⚙️ Configuration des plugins
+
+Active le système de plugins dans la configuration de ton application :
+
+```javascript
+const app = new App({
+  plugins: {
+    enabled: true,          // Active le système de plugins
+    autoLoad: true,         // Chargement automatique des plugins
+    pluginsDir: 'plugins'   // Dossier des plugins
+  }
+});
+```
+
+## 📦 Structure d’un plugin
+
+Un plugin est un simple module Node.js exportant un objet avec des propriétés et méthodes spécifiques :
+
+```javascript
+// plugins/mon-plugin.js
+module.exports = {
+  name: 'mon-plugin',
+  version: '1.0.0',
+  description: 'Description de mon plugin',
+  dependencies: ['autre-plugin'], // Optionnel
+  defaultConfig: {
+    enabled: true,
+    option1: 'valeur'
+  },
+  async load(app, config, context) {
+    // Code d’initialisation du plugin
+    context.log('success', 'Plugin chargé !');
+    // Ajouter une route
+    context.addRoute('get', '/mon-plugin', (req, res) => {
+      res.json({ message: 'Hello depuis le plugin !' });
+    });
+    // Ajouter un middleware
+    context.addMiddleware((req, res, next) => {
+      req.pluginData = { source: 'mon-plugin' };
+      next();
+    });
+    // Ajouter un hook
+    context.hook('route:create', (method, path) => {
+      context.log('info', `Route créée : ${method} ${path}`);
+    });
+  },
+  async unload(app, config) {
+    // Nettoyage lors du déchargement
+    console.log('Plugin déchargé');
+  }
+};
+```
+
+## 🛠️ API du contexte plugin
+
+Chaque plugin reçoit un objet `context` offrant de nombreuses fonctionnalités :
+
+- **Hooks** : `context.hook('nom', callback)` pour réagir à des événements (création de route, requête, etc.)
+- **Routes** : `context.addRoute('get', '/chemin', handler)`
+- **Middlewares** : `context.addMiddleware(fn)`
+- **Commandes CLI** : `context.addCommand('nom', handler, 'description')`
+- **Logs** : `context.log('type', 'message', 'détails')`
+- **Accès aux autres plugins** : `context.getPlugin('nom')`, `context.listPlugins()`
+- **Configuration** : `context.getConfig()`, `context.updateConfig({...})`
+- **Stockage persistant** : `context.storage.set('clé', valeur)`, `context.storage.get('clé')`, `context.storage.delete('clé')`
+
+## ✨ Exemples de plugins
+
+### Plugin base de données
+
+```javascript
+// plugins/database.js
+const mongoose = require('mongoose');
+module.exports = {
+  name: 'database',
+  async load(app, config, context) {
+    await mongoose.connect(config.uri, config.options);
+    context.log('success', 'Connexion MongoDB établie');
+    app.db = mongoose;
+    context.hook('app:stop', async () => {
+      await mongoose.disconnect();
+      context.log('info', 'Connexion MongoDB fermée');
+    });
+  }
+};
+```
+
+### Plugin authentification
+
+```javascript
+// plugins/auth.js
+const jwt = require('jsonwebtoken');
+module.exports = {
+  name: 'auth',
+  dependencies: ['database'],
+  defaultConfig: {
+    secret: 'votre-cle-secrete',
+    expiresIn: '24h'
+  },
+  async load(app, config, context) {
+    const authMiddleware = (req, res, next) => {
+      const token = req.headers.authorization?.split(' ')[1];
+      if (!token) return res.status(401).json({ error: 'Token manquant' });
+      try {
+        req.user = jwt.verify(token, config.secret);
+        next();
+      } catch {
+        res.status(401).json({ error: 'Token invalide' });
+      }
+    };
+    context.addRoute('post', '/auth/login', async (req, res) => {
+      // Validation utilisateur fictive
+      const { email, password } = req.body;
+      if (email && password) {
+        const token = jwt.sign({ email }, config.secret, { expiresIn: config.expiresIn });
+        res.json({ token });
+      } else {
+        res.status(401).json({ error: 'Identifiants invalides' });
+      }
+    });
+    context.addRoute('get', '/auth/profile', authMiddleware, (req, res) => {
+      res.json({ user: req.user });
+    });
+    app.authMiddleware = authMiddleware;
+    context.log('success', 'Plugin auth chargé');
+  }
+};
+```
+
+### Plugin cache
+
+```javascript
+// plugins/cache.js
+const NodeCache = require('node-cache');
+module.exports = {
+  name: 'cache',
+  defaultConfig: {
+    stdTTL: 600,
+    checkperiod: 120
+  },
+  async load(app, config, context) {
+    const cache = new NodeCache(config);
+    const cacheMiddleware = (duration = 300) => (req, res, next) => {
+      const key = req.originalUrl;
+      const cached = cache.get(key);
+      if (cached) return res.json(cached);
+      const originalSend = res.json;
+      res.json = function(data) {
+        cache.set(key, data, duration);
+        return originalSend.call(this, data);
+      };
+      next();
+    };
+    app.cache = {
+      get: (key) => cache.get(key),
+      set: (key, value, ttl) => cache.set(key, value, ttl),
+      del: (key) => cache.del(key),
+      flush: () => cache.flushAll(),
+      middleware: cacheMiddleware,
+      stats: () => cache.getStats()
+    };
+    context.addRoute('get', '/cache/stats', (req, res) => {
+      res.json(cache.getStats());
+    });
+    context.log('success', 'Plugin cache chargé');
+  }
+};
+```
+
+## 🔄 Gestion des plugins
+
+- **Chargement manuel** : `await app.loadPlugin('nom', { option: 'valeur' })`
+- **Déchargement** : `await app.unloadPlugin('nom')`
+- **Liste des plugins** : `app.listPlugins()`
+- **Activation/désactivation** : `await app.plugins.togglePlugin('nom', true)`
+- **Statistiques** : `app.plugins.getStats()`
+
+## 🪝 Hooks disponibles
+
+- `app:init`, `app:start`, `app:stop` — Démarrage/arrêt de l’application
+- `route:load`, `route:create`, `route:created`, `route:delete` — Gestion des routes
+- `request:start`, `request:end` — Début/fin de requête
+- `websocket:connect`, `websocket:disconnect` — Connexions WebSocket
+- `file:change` — Modification de fichier
+- `plugin:load`, `plugin:unload` — Chargement/déchargement de plugin
+- `error:handle` — Gestion des erreurs
+
+---
+
+## 📚 Pour aller plus loin
+
+- [Configuration avancée](/guides/configuration)
+- [Structure du projet](/guides/project-structure)

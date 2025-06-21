@@ -1,0 +1,102 @@
+---
+title: Configuration Auto-Updater
+description: Options de configuration
+---
+
+# ⚙️ Configuration Auto-Updater
+
+L’auto-updater de Veko.js est entièrement configurable pour s’adapter à tes besoins de sécurité, de stabilité et de flexibilité.
+
+## Exemple de configuration
+
+Ajoute la section `autoUpdater` dans la configuration de ton application :
+
+```javascript
+const { App } = require('veko');
+
+const app = new App({
+  autoUpdater: {
+    enabled: true,              // Active l’auto-updater
+    checkOnStart: true,         // Vérifie les mises à jour au démarrage
+    autoUpdate: false,          // Mise à jour automatique (false = manuel recommandé)
+    updateChannel: 'stable',    // stable | beta | alpha
+    securityUpdates: true,      // Mises à jour de sécurité auto
+    backupCount: 5,             // Nombre de backups à conserver (1-10)
+    checkInterval: 3600000,     // Intervalle de vérification (ms)
+    rollbackOnFailure: true     // Restauration auto en cas d’échec
+  }
+});
+
+app.listen();
+```
+
+## Options disponibles
+
+| Option              | Description                                                                 | Valeur par défaut |
+|---------------------|-----------------------------------------------------------------------------|-------------------|
+| `enabled`           | Active ou désactive l’auto-updater                                          | `true`            |
+| `checkOnStart`      | Vérifie les mises à jour au démarrage                                       | `true`            |
+| `autoUpdate`        | Active la mise à jour automatique (sinon manuel)                            | `false`           |
+| `updateChannel`     | Canal de mise à jour : `stable`, `beta`, `alpha`                            | `'stable'`        |
+| `securityUpdates`   | Installe automatiquement les mises à jour de sécurité critiques              | `true`            |
+| `backupCount`       | Nombre de backups à conserver avant chaque update (1-10)                    | `5`               |
+| `checkInterval`     | Fréquence de vérification automatique (en ms, ex : 3600000 = 1h)            | `3600000`         |
+| `rollbackOnFailure` | Restaure automatiquement la version précédente en cas d’échec               | `true`            |
+
+## Modifier la configuration via la CLI
+
+Tu peux modifier la configuration à chaud avec la CLI :
+
+```bash
+veko update config autoUpdate true
+veko update config updateChannel beta
+veko update config backupCount 10
+```
+
+## Exemples de scénarios
+
+- **Production** :  
+  ```javascript
+  autoUpdater: {
+    enabled: true,
+    checkOnStart: true,
+    autoUpdate: false,
+    updateChannel: 'stable',
+    securityUpdates: true,
+    backupCount: 5,
+    rollbackOnFailure: true
+  }
+  ```
+- **Environnement de test** :  
+  ```javascript
+  autoUpdater: {
+    enabled: true,
+    checkOnStart: true,
+    autoUpdate: true,
+    updateChannel: 'beta',
+    securityUpdates: true,
+    backupCount: 2,
+    rollbackOnFailure: true
+  }
+  ```
+
+## API REST de configuration
+
+Tu peux aussi gérer la configuration à distance :
+
+```bash
+# Afficher la configuration actuelle
+GET http://localhost:3000/_veko/updates/config
+
+# Modifier un paramètre
+POST http://localhost:3000/_veko/updates/config
+# Body: { "autoUpdate": true }
+```
+
+---
+
+## 📚 Pour aller plus loin
+
+- [Guide complet](/auto-updater/guide)
+- [Statistiques de l’auto-updater](/auto-updater/stats)
+-

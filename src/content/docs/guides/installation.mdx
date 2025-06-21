@@ -1,0 +1,101 @@
+---
+title: Installation
+description: Guide d'installation de Veko.js
+---
+
+import { Card } from '@astrojs/starlight/components';
+
+# 🚀 Installation
+
+Veko.js est un framework **ultra-moderne** pour Node.js, conçu pour un développement rapide, sécurisé et élégant.
+
+## Prérequis
+
+- **Node.js** v18 ou supérieur recommandé
+- **npm** (inclus avec Node.js)
+
+## Installation globale (CLI)
+
+Pour installer Veko.js globalement et accéder à la CLI :
+
+```bash
+npm install -g veko
+```
+
+## Installation dans un projet existant
+
+Pour ajouter Veko.js à un projet Node.js existant :
+
+```bash
+npm install veko
+```
+
+## Création d’un nouveau projet
+
+Utilisez la CLI pour générer un projet prêt à l’emploi :
+
+```bash
+# Créer un nouveau projet
+veko setup mon-app
+
+# Avec options
+veko setup --name mon-blog --template blog --git
+
+# Templates disponibles : default, api, blog, admin
+```
+
+## Commandes essentielles
+
+```bash
+# Démarrer le serveur de développement
+veko dev
+
+# Démarrer en production
+veko start
+
+# Vérifier les mises à jour
+veko update check
+
+# Installer une mise à jour
+veko update update
+
+# Configurer l’auto-updater
+veko update config
+```
+
+## Exemple de configuration minimale
+
+```javascript
+const { App } = require('veko');
+
+const app = new App({
+  port: 3000,
+  viewsDir: 'views',
+  staticDir: 'public',
+  routesDir: 'routes',
+  layouts: {
+    enabled: true,
+    defaultLayout: 'main'
+  },
+  plugins: {
+    enabled: true,
+    autoLoad: true,
+    pluginsDir: 'plugins'
+  }
+});
+
+app.loadRoutes().listen();
+```
+
+<Card title="Astuce" icon="lightbulb">
+Pour profiter du rechargement intelligent et de la journalisation élégante, utilisez <code>veko dev</code> pendant le développement.
+</Card>
+
+---
+
+## Prochaines étapes
+
+- [Démarrage rapide](/guides/getting-started)
+- [Structure du projet](/guides/project-structure)
+- [Configuration avancée](/guides/configuration)
+- [Système de plugins](/features/plugins)

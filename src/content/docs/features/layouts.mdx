@@ -1,0 +1,153 @@
+---
+title: Système de layout
+description: Utilisation des layouts avancés
+---
+
+# 🎨 Système de layout
+
+Le système de layout de Veko.js permet de factoriser l’en-tête, le pied de page, les scripts et tout contenu récurrent dans tes vues EJS. Il offre des sections dynamiques, des helpers puissants et une configuration avancée.
+
+## ⚙️ Configuration du layout
+
+Active le système de layout dans la configuration de ton application :
+
+```javascript
+const app = new App({
+  layouts: {
+    enabled: true,                // Active le système de layout
+    layoutsDir: 'views/layouts',  // Dossier des layouts
+    defaultLayout: 'main',        // Nom du layout par défaut
+    extension: '.ejs',            // Extension des fichiers
+    sections: ['head', 'header', 'content', 'footer', 'scripts'],
+    cache: true                   // Active le cache en production
+  }
+});
+```
+
+## 🏗️ Créer un layout
+
+Crée un fichier dans `views/layouts/main.ejs` :
+
+```html
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title><%= meta.title || 'Veko.js App' %></title>
+  <% if (meta.description) { %>
+  <meta name="description" content="<%= meta.description %>">
+  <% } %>
+  <link rel="stylesheet" href="/css/style.css">
+  <% if (sections && sections.head) { %>
+    <%- sections.head %>
+  <% } %>
+</head>
+<body>
+  <% if (sections && sections.header) { %>
+    <header><%- sections.header %></header>
+  <% } %>
+  <main>
+    <%- sections.content %>
+  </main>
+  <% if (sections && sections.footer) { %>
+    <footer><%- sections.footer %></footer>
+  <% } else { %>
+    <footer><p>&copy; <%= new Date().getFullYear() %> - Powered by Veko.js ⚡</p></footer>
+  <% } %>
+  <% if (sections && sections.scripts) { %>
+    <%- sections.scripts %>
+  <% } %>
+</body>
+</html>
+```
+
+## ✍️ Utiliser un layout dans une vue
+
+Dans tes vues EJS (ex : `views/index.ejs`), tu peux définir des sections et utiliser les helpers :
+
+```html
+<% layout.title('Accueil - Mon App') %>
+<% layout.meta('description', 'Bienvenue sur mon application Veko.js') %>
+<% layout.css('/css/home.css') %>
+
+<% layout.section('header', `
+  <div class="hero">
+    <h1>Bienvenue sur Veko.js</h1>
+    <p>Développez des applications web modernes avec élégance</p>
+  </div>
+`) %>
+
+<div class="container">
+  <p>Contenu principal de la page…</p>
+</div>
+
+<% layout.section('scripts', `
+  <script>
+    console.log('Page chargée avec Veko.js !');
+  </script>
+`) %>
+```
+
+## 🛠️ Helpers disponibles
+
+- `layout.title('Titre de la page')` — définit le `<title>`
+- `layout.meta('name', 'valeur')` — ajoute une balise meta
+- `layout.css('/chemin.css')` — ajoute une feuille de style
+- `layout.js('/chemin.js')` — ajoute un script JS
+- `layout.section('nom', contenu)` — définit une section personnalisée
+
+## 🚀 Exemple complet
+
+**views/layouts/main.ejs** :
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= meta.title || 'Veko.js App' %></title>
+  <% if (meta.description) { %>
+  <meta name="description" content="<%= meta.description %>">
+  <% } %>
+  <link rel="stylesheet" href="/css/style.css">
+  <% if (sections && sections.head) { %>
+    <%- sections.head %>
+  <% } %>
+</head>
+<body>
+  <% if (sections && sections.header) { %>
+    <header><%- sections.header %></header>
+  <% } %>
+  <main>
+    <%- sections.content %>
+  </main>
+  <% if (sections && sections.footer) { %>
+    <footer><%- sections.footer %></footer>
+  <% } else { %>
+    <footer><p>&copy; <%= new Date().getFullYear() %> - Powered by Veko.js ⚡</p></footer>
+  <% } %>
+  <% if (sections && sections.scripts) { %>
+    <%- sections.scripts %>
+  <% } %>
+</body>
+</html>
+```
+
+**views/index.ejs** :
+
+```html
+<% layout.title('Accueil') %>
+<% layout.meta('description', 'Page d’accueil Veko.js') %>
+<% layout.section('header', '<h1>Bienvenue !</h1>') %>
+
+<div>
+  <p>Voici la page d’accueil de votre application Veko.js.</p>
+</div>
+```
+
+---
+
+## 📚 Pour aller plus loin
+
+- [Structure du projet](/guides/project-structure)
+- [Système de plugins](/features/plugins)
+- [Configuration avancée](/guides/configuration)

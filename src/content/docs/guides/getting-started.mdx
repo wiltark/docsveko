@@ -1,0 +1,141 @@
+---
+title: Démarrage rapide
+description: Commencez avec Veko.js en 5 minutes
+---
+
+import { Card } from '@astrojs/starlight/components';
+
+## 🚀 Installation
+
+### Installation globale (CLI)
+
+```bash
+npm install -g veko
+```
+
+### Installation dans un projet
+
+```bash
+npm install veko
+```
+
+## 🛠️ Créer un nouveau projet
+
+1. **Initialisation du projet**
+
+   ```bash
+   # Créer un nouveau projet
+   veko setup mon-app
+
+   # Avec options
+   veko setup --name mon-blog --template blog --git
+
+   # Templates disponibles : default, api, blog, admin
+   ```
+
+2. **Structure du projet**
+
+   ```
+   mon-app/
+   ├── routes/          # Gestion des routes
+   ├── views/           # Templates EJS
+   ├── public/          # Fichiers statiques
+   ├── plugins/         # Plugins personnalisés
+   ├── config/          # Configuration
+   └── package.json
+   ```
+
+3. **Application de base**
+
+   ```javascript
+   // app.js
+   const { App } = require('veko');
+
+   const app = new App({
+     port: 3000,
+     viewsDir: 'views',
+     staticDir: 'public',
+     routesDir: 'routes',
+     layouts: {
+       enabled: true,
+       defaultLayout: 'main'
+     },
+     plugins: {
+       enabled: true,
+       autoLoad: true,
+       pluginsDir: 'plugins'
+     }
+   });
+
+   app.loadRoutes().listen();
+   ```
+
+4. **Démarrer le serveur**
+
+   ```bash
+   # Mode développement
+   veko dev
+
+   # Mode production
+   veko start
+   ```
+
+## 💻 Exemple de route
+
+```javascript
+// routes/index.js
+module.exports = {
+  get: (req, res) => {
+    res.render('index', { 
+      title: 'Bienvenue sur Veko.js',
+      message: 'Framework ultra-moderne pour Node.js'
+    });
+  }
+};
+```
+
+## 🌐 Exemple de vue EJS
+
+```html
+<!-- views/index.ejs -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= title %></title>
+</head>
+<body>
+  <h1><%= message %></h1>
+  <p>Développez des applications web modernes avec élégance</p>
+</body>
+</html>
+```
+
+## ⚡ Commandes essentielles
+
+```bash
+# Démarrer le serveur de développement
+veko dev
+
+# Créer un nouveau projet
+veko setup mon-app
+
+# Vérifier les mises à jour
+veko update check
+
+# Installer une mise à jour
+veko update update
+
+# Afficher l'aide
+veko --help
+```
+
+## 🔜 Prochaines étapes
+
+- [Configuration avancée](/guides/configuration)
+- [Système de plugins](/features/plugins)
+- [Gestion des routes](/features/routing)
+- [Auto-Updater](/auto-updater/guide)
+
+<Card title="Astuce" icon="lightbulb">
+Pour une expérience optimale, utilisez Veko.js en mode développement avec la commande <code>veko dev</code> qui active le rechargement intelligent et la journalisation élégante.
+</Card>

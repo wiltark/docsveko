@@ -1,0 +1,87 @@
+---
+title: Canaux de mise à jour
+description: Gestion des canaux stable/beta/alpha
+---
+
+# 🎯 Canaux de mise à jour
+
+L’auto-updater de Veko.js prend en charge plusieurs canaux de mise à jour pour s’adapter à tous les besoins : **stable**, **beta** et **alpha**.
+
+## ✨ Présentation des canaux
+
+- **Stable**  
+  ✅ Versions prêtes pour la production  
+  ✅ Testées et stables  
+  ✅ Compatibilité ascendante garantie  
+  ✅ Recommandé pour les environnements de production
+
+- **Beta**  
+  ✅ Versions pré-release avec nouvelles fonctionnalités  
+  ✅ Phase de test de stabilité  
+  ⚠️ Peut contenir des bugs mineurs  
+  🎯 Idéal pour les environnements de test
+
+- **Alpha**  
+  ✅ Dernières nouveautés et améliorations  
+  ✅ Accès immédiat aux développements en cours  
+  ⚠️ Fonctionnalités expérimentales  
+  🚧 Réservé au développement et aux tests avancés
+
+## ⚙️ Changer de canal
+
+Tu peux changer de canal à tout moment via la CLI :
+
+```bash
+veko update config updateChannel beta
+```
+
+Ou en modifiant la configuration dans ton code :
+
+```javascript
+const app = new App({
+  autoUpdater: {
+    updateChannel: 'beta' // stable | beta | alpha
+  }
+});
+```
+
+## 🛡️ Sécurité et recommandations
+
+- Le canal **stable** est recommandé pour la production.
+- Les canaux **beta** et **alpha** permettent de tester les nouveautés avant leur sortie officielle.
+- Tu peux revenir au canal stable à tout moment sans perdre tes données.
+
+## 📊 Statistiques par canal
+
+L’auto-updater suit l’historique des mises à jour et le canal utilisé. Utilise :
+
+```bash
+veko update stats
+```
+pour voir la répartition des mises à jour par canal.
+
+## 🔄 Exemples d’utilisation
+
+### Passer en canal beta
+
+```bash
+veko update config updateChannel beta
+veko update check
+veko update update
+```
+
+### Revenir en canal stable
+
+```bash
+veko update config updateChannel stable
+veko update check
+veko update update
+```
+
+---
+
+## 📚 Pour aller plus loin
+
+- [Guide complet](/auto-updater/guide)
+- [Configuration de l’auto-updater](/auto-updater/configuration)
+- [API REST auto-updater](/auto-updater/api)
